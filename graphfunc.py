@@ -34,15 +34,15 @@ def print_tip_distribution(dataFrame, day_filter='All'):
         xaxis_title="Gender",
         yaxis_title="Average Tip Amount ($)",
         showlegend=False,
-        bargap=0.7,  # Больше пространства между группами столбцов
-        bargroupgap=0.3,  # Пространство между столбцами внутри группы
+        bargap=0.7,
+        bargroupgap=0.3,
         margin=dict(l=50, r=50, t=60, b=50),
         autosize=True,
-        width=None  # Автоматическая ширина
+        width=None
     )
 
-    # Настройка ширины отдельных столбцов
-    fig.update_traces(width=0.3)  # Значительно уменьшаем ширину столбцов
+
+    fig.update_traces(width=0.3)
 
     return fig
 
