@@ -1,6 +1,8 @@
 import plotly.express as px
-
-
+import pandas as pd
+from dash import html
+import numpy as np
+import dash_bootstrap_components as dbc
 def print_tip_distribution(dataFrame, day_filter='All'):
     """
     Создает график распределения чаевых по полу с возможностью фильтрации по дню недели
@@ -133,3 +135,129 @@ def print_tip_vs_bill_scatter(dataFrame):
 
     fig.update_layout(legend_title_text='Time of Day')
     return fig
+
+
+def calculate_statistics(dataFrame):
+    """
+    Рассчитывает основные статистические показатели данных о чаевых
+    """
+    stats = {}
+
+    # Основные показатели
+    stats['total_records'] = len(dataFrame)
+    stats['avg_bill'] = dataFrame['total_bill'].mean()
+    stats['avg_tip'] = dataFrame['tip'].mean()
+    stats['avg_tip_percentage'] = (dataFrame['tip'] / dataFrame['total_bill'] * 100).mean()
+    stats['avg_size'] = dataFrame['size'].mean()
+
+    # По полу
+    gender_stats = dataFrame.groupby('sex').agg({
+        'tip': 'mean',
+        'total_bill': 'mean',
+        'size': 'mean'
+    }).round(2)
+    stats['gender_stats'] = gender_stats
+
+    # По дням недели
+    day_stats = dataFrame.groupby('day').agg({
+        'tip': 'mean',
+        'total_bill': 'mean',
+        'size': 'count'
+    }).round(2)
+    stats['day_stats'] = day_stats
+
+    # По времени дня
+    time_stats = dataFrame.groupby('time').agg({
+        'tip': 'mean',
+        'total_bill': 'mean'
+    }).round(2)
+    stats['time_stats'] = time_stats
+
+    # По курящим/некурящим
+    smoker_stats = dataFrame.groupby('smoker').agg({
+        'tip': 'mean',
+        'total_bill': 'mean'
+    }).round(2)
+    stats['smoker_stats'] = smoker_stats
+
+    # Корреляция
+    stats['correlation'] = dataFrame['total_bill'].corr(dataFrame['tip'])
+
+    # Экстремальные значения
+    stats['max_tip'] = dataFrame['tip'].max()
+    stats['min_tip'] = dataFrame['tip'].min()
+    stats['max_bill'] = dataFrame['total_bill'].max()
+    stats['min_bill'] = dataFrame['total_bill'].min()
+
+    return stats
+
+
+def create_interactive_stats(dataFrame):
+    """
+    Создает интерактивные статистические карточки
+    """
+    stats = calculate_statistics(dataFrame)
+
+    return html.Div([
+        dbc.Row([
+            # Основные показатели
+            dbc.Col(dbc.Card([
+                dbc.CardHeader("📊 Основные показатели"),
+                dbc.CardBody([
+                    html.H4(f"{stats['total_records']}", className="text-primary"),
+                    html.P("Всего записей", className="text-muted")
+                ])
+            ]), md=3),
+
+            dbc.Col(dbc.Card([
+                dbc.CardHeader("💰 Средний счет"),
+                dbc.CardBody([
+                    html.H4(f"${stats['avg_bill']:.2f}", className="text-success"),
+                    html.P("Средняя сумма", className="text-muted")
+                ])
+            ]), md=3),
+
+            dbc.Col(dbc.Card([
+                dbc.CardHeader("💵 Средние чаевые"),
+                dbc.CardBody([
+                    html.H4(f"${stats['avg_tip']:.2f}", className="text-info"),
+                    html.P(f"{stats['avg_tip_percentage']:.1f}% от счета", className="text-muted")
+                ])
+            ]), md=3),
+
+            dbc.Col(dbc.Card([
+                dbc.CardHeader("👥 Размер компании"),
+                dbc.CardBody([
+                    html.H4(f"{stats['avg_size']:.1f}", className="text-warning"),
+                    html.P("Среднее количество", className="text-muted")
+                ])
+            ]), md=3),
+        ], className="mb-4"),
+
+        # Детальная статистика
+        dbc.Row([
+            dbc.Col(dbc.Card([
+                dbc.CardHeader("👨‍👩 По полу"),
+                dbc.CardBody([
+                    *[html.P(f"{row.Index}: ${row.tip:.2f} чаевых")
+                      for row in stats['gender_stats'].itertuples()]
+                ])
+            ]), md=4),
+
+            dbc.Col(dbc.Card([
+                dbc.CardHeader("📅 По дням недели"),
+                dbc.CardBody([
+                    *[html.P(f"{row.Index}: ${row.tip:.2f} чаевых")
+                      for row in stats['day_stats'].itertuples()]
+                ])
+            ]), md=4),
+
+            dbc.Col(dbc.Card([
+                dbc.CardHeader("⏰ По времени дня"),
+                dbc.CardBody([
+                    *[html.P(f"{row.Index}: ${row.tip:.2f} чаевых")
+                      for row in stats['time_stats'].itertuples()]
+                ])
+            ]), md=4),
+        ])
+    ])

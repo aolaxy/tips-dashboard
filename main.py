@@ -4,9 +4,11 @@ from dash import Dash, dcc, html, Input, Output, no_update
 from dash import dash_table
 from graphfunc import print_tip_distribution, print_total_bill_distribution, print_time_boxplot, print_day_pie_chart, \
     print_tip_vs_bill_scatter
+from graphfunc import calculate_statistics, create_interactive_stats
 
 df = pd.read_csv('tips.csv')
-
+# Рассчитаем статистику один раз при загрузке в начале
+stats = calculate_statistics(df)
 app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
 
 # Добавляем опцию для таблицы в выбор типа отображения
@@ -50,7 +52,7 @@ app.layout = dbc.Container([
         })
     ], width=12)
 ], className="mb-4"),
-
+create_interactive_stats(df),
     # Кнопка сброса фильтров
     dbc.Row([
         dbc.Col([
