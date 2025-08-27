@@ -222,7 +222,7 @@ app.layout = dbc.Container([
         ], width=12)
     ]),
 
-    # Footer с логотипом OTUS
+    # Footer с логотипом
     dbc.Row([
         dbc.Col([
             html.Hr(className="my-4"),

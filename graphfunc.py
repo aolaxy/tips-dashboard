@@ -48,14 +48,6 @@ def print_tip_distribution(dataFrame, day_filter='All'):
 def print_total_bill_distribution(dataFrame, day_filter='All'):
     """
     Создает гистограмму распределения сумм счетов (total_bill)
-    с возможностью фильтрации по дню недели
-
-    Параметры:
-    dataFrame - DataFrame с данными
-    day_filter - фильтр по дню недели ('All', 'Thur', 'Fri', 'Sat', 'Sun')
-
-    Возвращает:
-    fig - объект Figure для Plotly
     """
     # Фильтрация данных по дню недели
     if day_filter != 'All':
@@ -87,12 +79,6 @@ def print_time_boxplot(dataFrame, gender_filter='All'):
     """
     Создает Box plot распределения чаевых по времени дня с фильтром по полу
 
-    Параметры:
-    dataFrame - DataFrame с данными
-    gender_filter - фильтр по полу ('All', 'Male', 'Female')
-
-    Возвращает:
-    fig - объект Figure для Plotly
     """
     # Фильтрация по полу
     if gender_filter != 'All':

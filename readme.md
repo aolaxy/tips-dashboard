@@ -29,4 +29,4 @@ cd tips-dashboard
 pip install -r requirements.txt
 
 # Запустить приложение
-python app.py
+python main.py
