@@ -52,7 +52,9 @@ app.layout = dbc.Container([
         })
     ], width=12)
 ], className="mb-4"),
-create_interactive_stats(df),
+#create_interactive_stats(df)
+    # Обновленная строка - добавлен ID для статистики
+    html.Div(id='stats-container', children=create_interactive_stats(df)),
     # Кнопка сброса фильтров
     dbc.Row([
         dbc.Col([
@@ -337,6 +339,22 @@ def update_table(selected_day, selected_gender, selected_time, smoker_status, bi
 
     return columns, data
 
+
+# CALLBACK ДЛЯ СТАТИСТИКИ
+@app.callback(
+    Output('stats-container', 'children'),
+    Input('day-dropdown', 'value'),
+    Input('gender-dropdown', 'value'),
+    Input('time-dropdown', 'value'),
+    Input('smoker-filter', 'value'),
+    Input('bill-range', 'value')
+)
+def update_stats(selected_day, selected_gender, selected_time, smoker_status, bill_range):
+    # Применяем фильтры к данным
+    filtered_df = apply_filters(df, selected_day, selected_gender, selected_time, smoker_status, bill_range)
+
+    # Создаем обновленные статистические карточки
+    return create_interactive_stats(filtered_df)
 
 # Вспомогательная функция для применения фильтров
 def apply_filters(dataframe, day, gender, time, smoker, bill_range):
