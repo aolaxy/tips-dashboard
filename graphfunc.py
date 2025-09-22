@@ -130,7 +130,7 @@ def print_tip_vs_bill_scatter(dataFrame):
                      y='tip',
                      color='time',
                      title='Tip Amount vs Total Bill',
-                     trendline='ols',
+                     trendline='ewm', trendline_options=dict(span=10),
                      labels={'total_bill': 'Total Bill ($)', 'tip': 'Tip Amount ($)'})
 
     fig.update_layout(legend_title_text='Time of Day')

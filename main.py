@@ -2,8 +2,7 @@ import pandas as pd
 import dash_bootstrap_components as dbc
 from dash import Dash, dcc, html, Input, Output, no_update
 from dash import dash_table
-from graphfunc import print_tip_distribution, print_total_bill_distribution, print_time_boxplot, print_day_pie_chart, \
-    print_tip_vs_bill_scatter
+from graphfunc import print_tip_distribution, print_total_bill_distribution, print_time_boxplot, print_day_pie_chart, print_tip_vs_bill_scatter
 from graphfunc import calculate_statistics, create_interactive_stats
 
 df = pd.read_csv('tips.csv')
